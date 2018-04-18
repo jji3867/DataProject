@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        img {
+            border: 1px solid#ddd;
+            border-radius: 4px;
+            padding: 5px;
+            width: 150px;
+        }
+        h1,h2 {
+            font-family:"Arial";
+            text-shadow:gray 2px 2px 2px;
+        }
+        p,a {
+            font-size:14pt;
+            font-family:"Arial";
+        }
+
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.js" ></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDGnnruK0MLn7sx65SrNso4Cm9gYP24UoA&callback=myMap"></script>
+</head>
+
+<body>
+    <div id="output_area"></div>
+    <div id="googleMap" style="width:100%;height:400px"></div>
+    <script>
+        var opendata_url = "https://data.cityofnewyork.us/resource/b67a-vkqb.json";
+        var info_card_template = "<h1>{{name}} {{nta}} {{city}} {{phone}} {{postcode}} </h1>";
+
+        function displayMap(lng,lat) {
+            var mapProp= {center:new google.maps.LatLng(lat,lng),zoom:5,};
+            var map=new google.maps.Map(document.getElementById("googleMap"),mapProp);
+        }
+        // fetch URL using getJSON
+        $.getJSON(opendata_url, function(location){
+            // get the results value
+            for (i = 0; i < location.length; i++) {
+                var html = html + Mustache.to_html(info_card_template, location[i]);
+                displayMap(location[i].longitude, location[i].latitude);
+            }
+            $('#output_area').html(html);
+        });
+    </script>
+
+</body>
+</html>
